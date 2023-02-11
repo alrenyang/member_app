@@ -6,36 +6,43 @@
       dark
     >
       <v-app-bar-nav-icon @click="drawer = !drawer"/>
-      <v-toolbar-title>고객 관리 프로그램</v-toolbar-title>
+      <site-title :title="title"></site-title>
       <v-spacer/>
       <v-btn icon to="/about">
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
     </v-app-bar>
-    <v-navigation-drawer v-model="drawer">
+    <v-navigation-drawer app v-model="drawer">
+      <v-divider></v-divider>
+      <site-menu></site-menu>
     </v-navigation-drawer>
     <v-content>
       <router-view/>
     </v-content>
-    <v-footer padless color="primary" dark absolute>
-      <v-col
-        class="text-center"
-        cols="12"
-      >
-        {{ new Date().getFullYear() }} — <strong>Made by Alren Yang</strong>
-      </v-col>
-    </v-footer>
+    <site-footer :footer="footer"></site-footer>
   </v-app>
 </template>
 
 <script>
+import SiteTitle from '@/views/site/title.vue'
+import SiteFooter from '@/views/site/footer.vue'
+import SiteMenu from '@/views/site/menu'
 
 export default {
+  components: {SiteTitle, SiteFooter, SiteMenu},
   name: 'App',
-  data: () => ({
+  data(){
+    return{
       drawer: false,
-      group: null,
-    }),
+      items: [],
+      title: '고객 관리 프로그램',
+      footer: 'Made by Alren Yang Korea'
+    }
+  },
+  
+  mounted () {
+  }
+
   
 }
 </script>
