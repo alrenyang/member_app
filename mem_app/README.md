@@ -19,6 +19,7 @@ npm run build
 ```
 npm run lint
 ```
+### firebase deploy 
 
 git config --global user.email "alren.yk@gmail.com"
 git config --global user.name "alrenyang"
