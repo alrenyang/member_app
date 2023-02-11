@@ -20,5 +20,8 @@ npm run build
 npm run lint
 ```
 
+git config --global user.email "alren.yk@gmail.com"
+git config --global user.name "alrenyang"
+
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
