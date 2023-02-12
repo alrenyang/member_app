@@ -154,13 +154,17 @@
 
       dialog_Save(){
         if(this.Edit_Save_Flag==true){
-          console.log(this.defaultItem)
+          console.log(this.defaultItem.Name)
           this.defaultItem = Object.assign({}, this.NullItem)
         }
         if(this.Edit_Save_Flag==false){
           this.defaultItem = Object.assign({}, this.NullItem)
         }
         this.dialogFlag = false
+      },
+
+      dialogDelOpen(){
+
       },
 
     }

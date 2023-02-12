@@ -9,7 +9,7 @@
       <site-title :title="title"></site-title>
       <v-spacer/>
       <v-btn icon to="/about">
-        <v-icon>mdi-magnify</v-icon>
+        <v-icon @click="testclick">mdi-magnify</v-icon>
       </v-btn>
     </v-app-bar>
     <v-navigation-drawer app v-model="drawer">
@@ -27,21 +27,27 @@
 import SiteTitle from '@/views/site/title.vue'
 import SiteFooter from '@/views/site/footer.vue'
 import SiteMenu from '@/views/site/menu'
+import auth from '@/plugins/firebase'
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+
+const provider = new GoogleAuthProvider();
 
 export default {
   components: {SiteTitle, SiteFooter, SiteMenu},
   name: 'App',
-  data(){
-    return{
+  data: () => ({
       drawer: false,
       items: [],
       title: '고객 관리 프로그램',
       footer: 'Made by Alren Yang Korea'
-    }
-  },
+  }),
   
-  mounted () {
-  }
+  methods: {
+    testclick() {
+      signInWithPopup(auth, provider)
+      console.log('testconsol')
+    },
+  },
 
   
 }
