@@ -13,7 +13,8 @@
                 label="Search"
                 single-line
                 hide-details
-                class="pr-md-5"
+                class="pa-md-5"
+                
               ></v-text-field>
               <v-btn color="#263238" class="pa-md-1" dark @click="dialogOpen(Edit_Save_Flag=true)">
               고객 정보 추가
@@ -42,27 +43,28 @@
         <v-card dark color="blue-grey darken-3">
           <v-card-text>
             <v-container>
-              <v-card-title sm="6" md="4" class="font-weight-black text-h3 px-1">{{ formTitle }}</v-card-title>
+              <v-card-title sm="5" md="4" class="font-weight-black text-h3 px-1">{{ formTitle }}</v-card-title>
                 <v-row>
-                  <v-col cols="12" sm="6" md="4">
-                  <v-text-field :rules="rules" dark v-model="defaultItem.Name" label="고객이름"> </v-text-field>
+                  <v-col cols="12" sm="5" md="4">
+                  <v-text-field :rules="rules" dark outlined hide-details v-model="defaultItem.Name" label="고객이름"> </v-text-field>
                   </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field dark v-model="defaultItem.Number"  label="연락처(핸드폰)"> </v-text-field>
-                  </v-col>
-                  <v-col cols="6" sm="4" md="3">
-                    <v-text-field dark v-model="defaultItem.Contact"  label="담당자"> </v-text-field>
+                  <v-col cols="12" sm="5" md="4">
+                    <v-text-field dark outlined  hide-details v-model="defaultItem.Number"  label="연락처(핸드폰)"> </v-text-field>
                   </v-col>
                   <v-col cols="6" sm="4" md="3">
-                    <v-text-field dark v-model="defaultItem.Store"  label="매장"> </v-text-field>
+                    <v-text-field dark outlined  hide-details v-model="defaultItem.Contact"  label="담당자"> </v-text-field>
                   </v-col>
                   <v-col cols="6" sm="4" md="3">
-                    <v-text-field dark v-model="defaultItem.Date" :disabled = false label="방문날자(년도/날자/시간)"> </v-text-field>
+                    <v-text-field dark outlined hide-details v-model="defaultItem.Store"  label="매장"> </v-text-field>
+                  </v-col>
+                  <v-col cols="6" sm="4" md="3">
+                    <v-text-field dark outlined hide-details
+                    hint="MM/DD/YYYY format" v-model="defaultItem.Date" :disabled = false label="방문날자(년도/날자/시간)"> </v-text-field>
                   </v-col>
                 </v-row>
                 <v-row>
-                  <v-col cols="12" sm="6" md="11">
-                    <v-text-field dark v-model="defaultItem.Memo"  label="메모"> </v-text-field>
+                  <v-col cols="12" sm="6" md="12">
+                    <v-text-field dark outlined hide-details v-model="defaultItem.Memo"  label="메모"> </v-text-field>
                   </v-col>
                 </v-row>
                 <v-card-actions>
@@ -117,8 +119,9 @@ let snapshot
       dialogTitle: '고객 정보 등록',
 
       rules: [
-        value => !!value || 'Required.',
-        value => (value && value.length >= 1) || 'Min 6 characters',
+        value => !!value || '이름은 필수 입력사항입니다.',
+        v => !(v && v.length >= 10) || '이름은 10자 이상 입력할 수 없습니다.',
+        v => !/[~!@#$%^&*()_+|<>?:{}]/.test(v) || '이름에는 특수문자를 사용할 수 없습니다.'
       ],
       search: '',
 
