@@ -7,12 +7,20 @@
             <v-toolbar dense flat color="grey darken-4" class="pa-1" dark>
               <v-toolbar-title class="font-weight-black">고객 정보 관리</v-toolbar-title>
               <v-spacer></v-spacer>
-              <v-btn color="grey darken-2" dark @click="dialogOpen(Edit_Save_Flag=true)">
+              <v-text-field
+                v-model="search"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+                class="pr-md-5"
+              ></v-text-field>
+              <v-btn color="#263238" class="pa-md-1" dark @click="dialogOpen(Edit_Save_Flag=true)">
               고객 정보 추가
               </v-btn>
             </v-toolbar>
             <v-card-text>
-              <v-data-table :headers="headers" :items-per-page="10" :items= "items" dark dense >
+              <v-data-table :headers="headers" :items-per-page="10" :items= "items"  :search="search" dark dense >
                 <template v-slot:item.date="{ item }">
                   <span>{{ item.date }}</span>
                 </template>
@@ -20,7 +28,7 @@
                   <v-icon small class="mr-2" @click="dialogOpen(item, Edit_Save_Flag=false)">
                     mdi-pencil
                   </v-icon>
-                  <v-icon small @click="dialogDelOpen(item)">
+                  <v-icon small color="purple" @click="dialogDelOpen(item)">
                     mdi-delete
                   </v-icon>
                 </template>
@@ -34,7 +42,7 @@
         <v-card dark color="blue-grey darken-3">
           <v-card-text>
             <v-container>
-              <v-card-title  class="font-weight-black text-h3 px-1">{{ formTitle }}</v-card-title>
+              <v-card-title sm="6" md="4" class="font-weight-black text-h3 px-1">{{ formTitle }}</v-card-title>
                 <v-row>
                   <v-col cols="12" sm="6" md="4">
                   <v-text-field :rules="rules" dark v-model="defaultItem.Name" label="고객이름"> </v-text-field>
@@ -42,14 +50,19 @@
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field dark v-model="defaultItem.Number"  label="연락처(핸드폰)"> </v-text-field>
                   </v-col>
-                  <v-col cols="12" sm="6" md="4">
+                  <v-col cols="6" sm="4" md="3">
                     <v-text-field dark v-model="defaultItem.Contact"  label="담당자"> </v-text-field>
                   </v-col>
-                  <v-col cols="12" sm="6" md="4">
+                  <v-col cols="6" sm="4" md="3">
                     <v-text-field dark v-model="defaultItem.Store"  label="매장"> </v-text-field>
                   </v-col>
-                  <v-col cols="12" sm="6" md="4">
+                  <v-col cols="6" sm="4" md="3">
                     <v-text-field dark v-model="defaultItem.Date" :disabled = false label="방문날자(년도/날자/시간)"> </v-text-field>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12" sm="6" md="11">
+                    <v-text-field dark v-model="defaultItem.Memo"  label="메모"> </v-text-field>
                   </v-col>
                 </v-row>
                 <v-card-actions>
@@ -107,6 +120,7 @@ let snapshot
         value => !!value || 'Required.',
         value => (value && value.length >= 1) || 'Min 6 characters',
       ],
+      search: '',
 
       headers:[
         {
@@ -119,6 +133,7 @@ let snapshot
         { text: '담당자', value: 'Contact' },
         { text: '매장', value: 'Store' },
         { text: '방문날자(년도/날자/시간)', value: 'Date' },
+        { text: '메모', value: 'Memo' },
         { text: 'Actions', value: 'actions', sortable: false },
       ],
       items:[],
@@ -128,6 +143,7 @@ let snapshot
           Number:'',
           Contact: '',
           Store: '',
+          Memo: '',
           Date: ''
       },
       NullItem: {
@@ -135,6 +151,7 @@ let snapshot
           Number:'',
           Contact: '',
           Store: '',
+          Memo: '',
           Date: ''
       },
     }),
@@ -191,6 +208,7 @@ let snapshot
             Number: this.defaultItem.Number,
             Contact: this.defaultItem.Contact,
             Store: this.defaultItem.Store,
+            Memo: this.defaultItem.Memo,
             Date: this.defaultItem.Date
             })
             // alert('정상 작성 되었습니다.')
@@ -211,6 +229,7 @@ let snapshot
             Number: this.defaultItem.Number,
             Contact: this.defaultItem.Contact,
             Store: this.defaultItem.Store,
+            Memo: this.defaultItem.Memo,
             Date: this.defaultItem.Date
           })
           this.data_listup()
@@ -249,6 +268,7 @@ let snapshot
             Number: doc.data().Number,
             Contact: doc.data().Contact,
             Store: doc.data().Store,
+            Memo: doc.data().Memo,
             Date: doc.data().Date
           })
           console.log(`${doc.id} => ${doc.data()}`);

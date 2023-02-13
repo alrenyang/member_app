@@ -2,7 +2,7 @@
   <v-app>
     <v-app-bar
       app
-      color="primary"
+      color="grey darken-4" 
       dark
     >
       <v-app-bar-nav-icon @click="drawer = !drawer"/>
@@ -13,11 +13,11 @@
         <v-icon @click="testclick">mdi-magnify</v-icon>
       </v-btn>
     </v-app-bar>
-    <v-navigation-drawer app v-model="drawer">
+    <v-navigation-drawer app dark v-model="drawer">
       <v-divider></v-divider>
       <site-menu></site-menu>
     </v-navigation-drawer>
-    <v-content>
+    <v-content fluid>
       <router-view/>
     </v-content>
     <site-footer :footer="footer"></site-footer>
