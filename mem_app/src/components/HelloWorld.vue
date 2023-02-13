@@ -12,7 +12,7 @@
               </v-btn>
             </v-toolbar>
             <v-card-text>
-              <v-data-table :headers="headers" :items-per-page="5" :items= "items" dark dense >
+              <v-data-table :headers="headers" :items-per-page="10" :items= "items" dark dense >
                 <template v-slot:item.date="{ item }">
                   <span>{{ item.date }}</span>
                 </template>
@@ -67,7 +67,30 @@
   </div>
 </template>
 
+
+
 <script>
+import { initializeApp } from "firebase/app"
+import { getFirestore } from "firebase/firestore"
+import { collection, addDoc, getDocs, doc } from "firebase/firestore";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAC7TXF0f8znCcUjLbWgQDGORKyqUfdGLI",
+    authDomain: "member-app-d019d.firebaseapp.com",
+    databaseURL: "https://member-app-d019d-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "member-app-d019d",
+    storageBucket: "member-app-d019d.appspot.com",
+    messagingSenderId: "479434588375",
+    appId: "1:479434588375:web:5b12892a7472b478f77092"
+  }
+
+  // Initialize Firebase
+const app = initializeApp(firebaseConfig)
+
+
+// Initialize Cloud Firestore and get a reference to the service
+const db = getFirestore(app)
+
   export default {
     name: 'HelloWorld',
 
@@ -95,23 +118,7 @@
         { text: '방문날자(년도/날자/시간)', value: 'Date' },
         { text: 'Actions', value: 'actions', sortable: false },
       ],
-      items:[
-        {
-          Name: '홍길동',
-          Number:'010-1234',
-          Contact: '홍길동',
-          Store: '잠실',
-          Date: '2023-02-10'
-        },
-        {
-          Name: '홍길동',
-          Number:'010-1234',
-          Contact: '홍길동',
-          Store: '잠실',
-          Date: '2023-02-10'
-        },
-          
-      ],
+      items:[],
       selectitems:[],
       defaultItem: {
           Name: '',
@@ -128,11 +135,18 @@
           Date: ''
       },
     }),
+
+    async mounted (){
+      await this.data_listup()
+      // await this.all_Remove()
+    },
+
     computed: {
       formTitle () {
         return this.dialogTitle
       }
     },
+
     methods: {
       dialogOpen(item, Edit_Save_Flag){
         // this.defaultItem.date = this.$dayjs().format('YYYY-MM-DD HH:mm:ss')
@@ -152,9 +166,25 @@
         this.dialogDelete = false
       },
 
-      dialog_Save(){
+      async dialog_Save(){
         if(this.Edit_Save_Flag==true){
           console.log(this.defaultItem.Name)
+          
+          try 
+          {
+            const docRef = await addDoc(collection(db, "MemberData"), {
+              Name: this.defaultItem.Name,
+              Number: this.defaultItem.Number,
+              Contact: this.defaultItem.Contact,
+              Store: this.defaultItem.Store,
+              Date: this.defaultItem.Date
+            })
+            // alert('정상 작성 되었습니다.')
+            console.log("Document written with ID: ", docRef.id)
+          } catch (e) {
+            console.error("Error adding document: ", e)
+          }
+          this.data_listup()
           this.defaultItem = Object.assign({}, this.NullItem)
         }
         if(this.Edit_Save_Flag==false){
@@ -165,6 +195,21 @@
 
       dialogDelOpen(){
 
+      },
+
+      async data_listup(){
+        const querySnapshot = await getDocs(collection(db, "MemberData"))
+        this.items.splice(0)
+        querySnapshot.forEach((doc) => {
+          this.items.push({
+            Name: doc.data().Name,
+            Number: doc.data().Number,
+            Contact: doc.data().Contact,
+            Store: doc.data().Store,
+            Date: doc.data().Date
+          })
+          console.log(`${doc.id} => ${doc.data()}`);
+        })
       },
 
     }

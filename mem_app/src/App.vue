@@ -8,7 +8,8 @@
       <v-app-bar-nav-icon @click="drawer = !drawer"/>
       <site-title :title="title"></site-title>
       <v-spacer/>
-      <v-btn icon to="/about">
+      <!-- <v-btn icon to="/about"> -->
+      <v-btn icon>
         <v-icon @click="testclick">mdi-magnify</v-icon>
       </v-btn>
     </v-app-bar>
@@ -27,10 +28,10 @@
 import SiteTitle from '@/views/site/title.vue'
 import SiteFooter from '@/views/site/footer.vue'
 import SiteMenu from '@/views/site/menu'
-import auth from '@/plugins/firebase'
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+// import auth from '@/plugins/firebase.js'
+// import { GoogleAuthProvider, signInWithPopup } from "firebase/auth"
 
-const provider = new GoogleAuthProvider();
+// const provider = new GoogleAuthProvider();
 
 export default {
   components: {SiteTitle, SiteFooter, SiteMenu},
@@ -44,7 +45,7 @@ export default {
   
   methods: {
     testclick() {
-      signInWithPopup(auth, provider)
+      // signInWithPopup(auth, provider)
       console.log('testconsol')
     },
   },
