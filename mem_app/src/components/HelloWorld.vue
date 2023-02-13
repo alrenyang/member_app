@@ -57,12 +57,11 @@
                   <v-btn color="blue-grey lighten-1" dark @click="dialog_Save">저장</v-btn>
                   <v-btn color="blue-grey lighten-1" dark @click="dialog_Coles">취소</v-btn>
                 </v-card-actions>
-
             </v-container>
           </v-card-text>
         </v-card>
       </v-dialog>
-
+      <DeletDialogBox :dialogDelete="dialogDelete" @dialog_Coles='dialog_Coles' @deleteItemConfirm = 'deleteItemConfirm'/>
     </v-container>
   </div>
 </template>
@@ -70,9 +69,11 @@
 
 
 <script>
+import DeletDialogBox from "@/components/DeletDialog.vue"
 import { initializeApp } from "firebase/app"
 import { getFirestore } from "firebase/firestore"
-import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import { collection, addDoc, getDocs, query, where, setDoc, doc, updateDoc, deleteDoc } from "firebase/firestore";
+
 
 const firebaseConfig = {
     apiKey: "AIzaSyAC7TXF0f8znCcUjLbWgQDGORKyqUfdGLI",
@@ -90,19 +91,21 @@ const app = initializeApp(firebaseConfig)
 
 // Initialize Cloud Firestore and get a reference to the service
 const db = getFirestore(app)
+let snapshot
 
   export default {
     name: 'HelloWorld',
+    components: { DeletDialogBox },
 
     data: () => ({
       dialogFlag: false,
       Edit_Save_Flag: false,
-      Edit_Save_Flag: false,
+      dialogDelete: false,
       dialogTitle: '고객 정보 등록',
 
       rules: [
         value => !!value || 'Required.',
-        value => (value && value.length >= 1) || 'Min 3 characters',
+        value => (value && value.length >= 1) || 'Min 6 characters',
       ],
 
       headers:[
@@ -164,10 +167,13 @@ const db = getFirestore(app)
           querySnapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
           console.log(doc.id, " => ", doc.data())
+          snapshot = doc.id
           })
         }
+        console.log("id",snapshot)
         this.dialogFlag = true
       },
+
       dialog_Coles(){
         this.defaultItem = Object.assign({}, this.NullItem)
         this.selectitems = Object.assign({}, this.NullItem)
@@ -196,14 +202,42 @@ const db = getFirestore(app)
           this.defaultItem = Object.assign({}, this.NullItem)
         }
         if(this.Edit_Save_Flag==false){
-          
+          console.log(this.defaultItem.Name)
+          console.log("snapshot",snapshot)
+
+          const washingtonRef = doc(db, "MemberData", snapshot);
+          await updateDoc(washingtonRef, {
+            Name: this.defaultItem.Name,
+            Number: this.defaultItem.Number,
+            Contact: this.defaultItem.Contact,
+            Store: this.defaultItem.Store,
+            Date: this.defaultItem.Date
+          })
+          this.data_listup()
           this.defaultItem = Object.assign({}, this.NullItem)
         }
         this.dialogFlag = false
       },
 
-      dialogDelOpen(){
+      async dialogDelOpen(item){
+        this.selectitems = item
+        console.log("정보삭제")
+        const q = query(collection(db, "MemberData"), where("Name", "==", this.selectitems.Name))
 
+        const querySnapshot = await getDocs(q)
+        querySnapshot.forEach((doc) => {
+          // doc.data() is never undefined for query doc snapshots
+        console.log(doc.id, " => ", doc.data())
+        snapshot = doc.id
+        })
+        console.log("id",snapshot)
+        this.dialogDelete = true
+      },
+
+      async deleteItemConfirm(){
+        await deleteDoc(doc(db, "MemberData", snapshot))
+        this.data_listup()
+        this.dialog_Coles()
       },
 
       async data_listup(){
