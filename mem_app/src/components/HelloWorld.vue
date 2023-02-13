@@ -72,7 +72,7 @@
 <script>
 import { initializeApp } from "firebase/app"
 import { getFirestore } from "firebase/firestore"
-import { collection, addDoc, getDocs, doc } from "firebase/firestore";
+import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAC7TXF0f8znCcUjLbWgQDGORKyqUfdGLI",
@@ -148,14 +148,23 @@ const db = getFirestore(app)
     },
 
     methods: {
-      dialogOpen(item, Edit_Save_Flag){
+      async dialogOpen(item, Edit_Save_Flag){
         // this.defaultItem.date = this.$dayjs().format('YYYY-MM-DD HH:mm:ss')
         if(Edit_Save_Flag==true){
-          this.dialogTitle='New Item'
+          this.dialogTitle='고객 정보 등록'
         }
         if(Edit_Save_Flag==false){
           this.defaultItem = item
-          this.dialogTitle='Edit Item'
+          this.dialogTitle='고객 정보 수정'
+          
+          console.log("정보수정")
+          const q = query(collection(db, "MemberData"), where("Name", "==", this.defaultItem.Name))
+
+          const querySnapshot = await getDocs(q)
+          querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+          console.log(doc.id, " => ", doc.data())
+          })
         }
         this.dialogFlag = true
       },
@@ -169,15 +178,14 @@ const db = getFirestore(app)
       async dialog_Save(){
         if(this.Edit_Save_Flag==true){
           console.log(this.defaultItem.Name)
-          
           try 
           {
             const docRef = await addDoc(collection(db, "MemberData"), {
-              Name: this.defaultItem.Name,
-              Number: this.defaultItem.Number,
-              Contact: this.defaultItem.Contact,
-              Store: this.defaultItem.Store,
-              Date: this.defaultItem.Date
+            Name: this.defaultItem.Name,
+            Number: this.defaultItem.Number,
+            Contact: this.defaultItem.Contact,
+            Store: this.defaultItem.Store,
+            Date: this.defaultItem.Date
             })
             // alert('정상 작성 되었습니다.')
             console.log("Document written with ID: ", docRef.id)
@@ -188,6 +196,7 @@ const db = getFirestore(app)
           this.defaultItem = Object.assign({}, this.NullItem)
         }
         if(this.Edit_Save_Flag==false){
+          
           this.defaultItem = Object.assign({}, this.NullItem)
         }
         this.dialogFlag = false
